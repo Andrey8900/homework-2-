@@ -9,6 +9,7 @@ import utils.WriterAndReader;
 import java.util.List;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -20,7 +21,7 @@ public class Main {
         Person deti2 = new Person(4, "Deti2", sdf.parse("2007-04-04"), Gender.FEMALE);
 
         // Создание экземпляра класса FamilyTree и добавление членов семьи
-        FamilyTree familyTree = new FamilyTree();
+        FamilyTree<Person> familyTree = new FamilyTree<>();
         familyTree.addMember(ivan);
         familyTree.addMember(maria);
         familyTree.addMember(deti1);
@@ -44,22 +45,21 @@ public class Main {
         // Запись данных в файл
         writerAndReader.writeToFile("familyTree.ser", familyTree);
 
-        // Чтение данных из файла и вывод на консоль
         System.out.println("Contents of familyTree.ser:");
-        FamilyTree loadedFamilyTree = writerAndReader.readFromFile("familyTree.ser");
+        FamilyTree<Person> loadedFamilyTree = writerAndReader.readFromFile("familyTree.ser");
         for (Person member : loadedFamilyTree) {
             System.out.println(member);
         }
 
         // Сортировка и вывод информации о членах семьи
         System.out.println("\nFamily members sorted by name:");
-        loadedFamilyTree.sortByName();
+        loadedFamilyTree.sortByName(Comparator.comparing(Person::getName));
         for (Person member : loadedFamilyTree) {
             System.out.println(member);
         }
 
         System.out.println("\nFamily members sorted by birth date:");
-        loadedFamilyTree.sortByBirthDate();
+        loadedFamilyTree.sortByBirthDate(Comparator.comparing(Person::getBirthDate));
         for (Person member : loadedFamilyTree) {
             System.out.println(member);
         }
