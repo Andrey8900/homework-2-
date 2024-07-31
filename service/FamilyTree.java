@@ -1,7 +1,6 @@
 package service;
 
-import model.Person;
-import model.Gender;
+import model.Identifiable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,21 +9,21 @@ import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class FamilyTree implements Iterable<Person>, Serializable {
+public class FamilyTree<T extends Identifiable & Serializable> implements Iterable<T>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private List<Person> members;
+    private List<T> members;
 
     public FamilyTree() {
         this.members = new ArrayList<>();
     }
 
-    public void addMember(Person person) {
-        members.add(person);
+    public void addMember(T member) {
+        members.add(member);
     }
 
-    public Person findMember(int id) {
-        for (Person member : members) {
+    public T findMember(int id) {
+        for (T member : members) {
             if (member.getId() == id) {
                 return member;
             }
@@ -32,25 +31,30 @@ public class FamilyTree implements Iterable<Person>, Serializable {
         return null;
     }
 
-    public void addChild(Person parent, Person child) {
-        parent.addChild(child);
-        if (parent.getGender() == Gender.MALE) {
-            child.setFather(parent);
-        } else if (parent.getGender() == Gender.FEMALE) {
-            child.setMother(parent);
+    public void addChild(T parent, T child) {
+        // Предполагается, что T - это Person, и у него есть метод addChild
+        if (parent instanceof model.Person) {
+            model.Person personParent = (model.Person) parent;
+            personParent.addChild((model.Person) child);
+            // Установка родительской связи для ребенка
+            if (personParent.getGender() == model.Gender.MALE) {
+                ((model.Person) child).setFather(personParent);
+            } else if (personParent.getGender() == model.Gender.FEMALE) {
+                ((model.Person) child).setMother(personParent);
+            }
         }
     }
 
-    public void sortByName() {
-        Collections.sort(members, Comparator.comparing(Person::getName));
+    public void sortByName(Comparator<? super T> comparator) {
+        Collections.sort(members, comparator);
     }
 
-    public void sortByBirthDate() {
-        Collections.sort(members, Comparator.comparing(Person::getBirthDate));
+    public void sortByBirthDate(Comparator<? super T> comparator) {
+        Collections.sort(members, comparator);
     }
 
     @Override
-    public Iterator<Person> iterator() {
+    public Iterator<T> iterator() {
         return members.iterator();
     }
 }
