@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Person implements Serializable {
+public class Person implements Identifiable, Serializable {
     private static final long serialVersionUID = 1L;
 
     private int id;
@@ -24,6 +24,7 @@ public class Person implements Serializable {
         this.children = new ArrayList<>();
     }
 
+    @Override
     public int getId() {
         return id;
     }
