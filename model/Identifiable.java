@@ -1,5 +1,5 @@
 package model;
 
-public interface  Identifiable{
+public interface Identifiable {
     int getId();
 }
