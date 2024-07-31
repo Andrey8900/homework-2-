@@ -67,24 +67,11 @@ public class Person implements Identifiable, Serializable {
 
     @Override
     public String toString() {
-        return "Person{id=" + id +
+        return "Person{" +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", birthDate=" + birthDate +
                 ", gender=" + gender +
-                ", father=" + (father != null ? father.getName() : "null") +
-                ", mother=" + (mother != null ? mother.getName() : "null") +
-                ", children=" + childrenNames() +
                 '}';
-    }
-
-    private String childrenNames() {
-        StringBuilder names = new StringBuilder();
-        for (Person child : children) {
-            if (names.length() > 0) {
-                names.append(", ");
-            }
-            names.append(child.getName());
-        }
-        return names.toString();
     }
 }
