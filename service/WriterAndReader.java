@@ -1,6 +1,5 @@
-package utils;
+package service;
 
-import service.FamilyTree;
 import model.Identifiable;
 
 import java.io.*;
