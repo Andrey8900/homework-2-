@@ -1,15 +1,15 @@
 package service;
 
 import model.Identifiable;
+import model.Gender;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Collections;
 import java.util.Comparator;
 
-public class FamilyTree<T extends Identifiable & Serializable> implements Iterable<T>, Serializable {
+public class FamilyTree<T extends Identifiable> implements Iterable<T>, Serializable {
     private static final long serialVersionUID = 1L;
 
     private List<T> members;
@@ -32,25 +32,20 @@ public class FamilyTree<T extends Identifiable & Serializable> implements Iterab
     }
 
     public void addChild(T parent, T child) {
-        // Предполагается, что T - это Person, и у него есть метод addChild
-        if (parent instanceof model.Person) {
-            model.Person personParent = (model.Person) parent;
-            personParent.addChild((model.Person) child);
-            // Установка родительской связи для ребенка
-            if (personParent.getGender() == model.Gender.MALE) {
-                ((model.Person) child).setFather(personParent);
-            } else if (personParent.getGender() == model.Gender.FEMALE) {
-                ((model.Person) child).setMother(personParent);
-            }
+        parent.addChild(child);
+        if (parent.getGender() == Gender.MALE) {
+            child.setFather(parent);
+        } else if (parent.getGender() == Gender.FEMALE) {
+            child.setMother(parent);
         }
     }
 
-    public void sortByName(Comparator<? super T> comparator) {
-        Collections.sort(members, comparator);
+    public void sortByName() {
+        members.sort(Comparator.comparing(Identifiable::getName));
     }
 
-    public void sortByBirthDate(Comparator<? super T> comparator) {
-        Collections.sort(members, comparator);
+    public void sortByBirthDate() {
+        members.sort(Comparator.comparing(Identifiable::getBirthDate));
     }
 
     @Override
