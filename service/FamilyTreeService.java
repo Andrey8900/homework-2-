@@ -1,55 +1,77 @@
 package service;
 
-import model.Identifiable;
 import model.Gender;
+import model.Person;
+import repository.FamilyTreeRepository;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Comparator;
 
-public class FamilyTree<T extends Identifiable> implements Iterable<T>, Serializable {
-    private static final long serialVersionUID = 1L;
+public class FamilyTreeService {
+    private FamilyTreeRepository repository;
+    private Researcher<Person> researcher;
 
-    private List<T> members;
-
-    public FamilyTree() {
-        this.members = new ArrayList<>();
+    public FamilyTreeService(FamilyTreeRepository repository) {
+        this.repository = repository;
+        this.researcher = new Researcher<>();
     }
 
-    public void addMember(T member) {
-        members.add(member);
+    public void addFamilyMember(Person person) {
+        repository.add(person);
     }
 
-    public T findMember(int id) {
-        for (T member : members) {
-            if (member.getId() == id) {
-                return member;
+    public boolean setParentForChild(int parentId, int childId) {
+        Person parent = repository.find(parentId);
+        Person child = repository.find(childId);
+
+        if (parent != null && child != null) {
+            parent.addChild(child);
+            if (parent.getGender() == Gender.MALE) {
+                child.setFather(parent);
+            } else if (parent.getGender() == Gender.FEMALE) {
+                child.setMother(parent);
             }
+            return true;
         }
-        return null;
-    }
-
-    public void addChild(T parent, T child) {
-        parent.addChild(child);
-        if (parent.getGender() == Gender.MALE) {
-            child.setFather(parent);
-        } else if (parent.getGender() == Gender.FEMALE) {
-            child.setMother(parent);
-        }
+        return false;
     }
 
     public void sortByName() {
-        members.sort(Comparator.comparing(Identifiable::getName));
+        List<Person> members = repository.findAll();
+        members.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
     }
 
     public void sortByBirthDate() {
-        members.sort(Comparator.comparing(Identifiable::getBirthDate));
+        List<Person> members = repository.findAll();
+        members.sort((p1, p2) -> p1.getBirthDate().compareTo(p2.getBirthDate()));
     }
 
-    @Override
-    public Iterator<T> iterator() {
-        return members.iterator();
+    public List<Person> getFamilyMembers() {
+        return repository.findAll();
+    }
+
+    public boolean saveFamilyTree(String filename) {
+        try {
+            repository.save(filename);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean loadFamilyTree(String filename) {
+        try {
+            repository.load(filename);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public List<Person> getDescendants(int personId) {
+        Person person = repository.find(personId);
+        if (person != null) {
+            return researcher.getDescendants(person);
+        }
+        return null;
     }
 }
