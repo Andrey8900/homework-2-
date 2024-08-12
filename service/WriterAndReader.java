@@ -1,23 +1,23 @@
-package utils;
+package service;
 
-import service.FamilyTreeService;
-import model.Identifiable;
+import model.Person;
 
 import java.io.*;
+import java.util.List;
 
 public class WriterAndReader {
 
-    public <T extends Identifiable & Serializable> void writeToFile(String filename, FamilyTreeService<T> familyTreeService) {
+    public void writeToFile(String filename, List<Person> members) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
-            oos.writeObject(familyTreeService);
+            oos.writeObject(members);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public <T extends Identifiable & Serializable> FamilyTreeService<T> readFromFile(String filename) {
+    public List<Person> readFromFile(String filename) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
-            return (FamilyTreeService<T>) ois.readObject();
+            return (List<Person>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
