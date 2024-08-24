@@ -1,11 +1,8 @@
 package repository;
 
-import java.util.List;
+import model.Person;
 
-public interface Repository<T> {
-    void add(T item);
-    T find(int id);
-    List<T> findAll();
-    void save(String filename);
-    void load(String filename);
+public interface Repository {
+    void save(Person person);
+
 }
