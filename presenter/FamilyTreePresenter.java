@@ -1,9 +1,9 @@
 package presenter;
 
-import model.Person;
 import service.FamilyTreeService;
+import model.Gender;
 
-import java.util.List;
+import java.util.Date;
 
 public class FamilyTreePresenter {
     private FamilyTreeService service;
@@ -12,35 +12,9 @@ public class FamilyTreePresenter {
         this.service = service;
     }
 
-    public void addFamilyMember(Person person) {
-        service.addFamilyMember(person);
+    public void addPerson(int id, String name, Date birthDate, Gender gender) {
+        service.addPerson(id, name, birthDate, gender);
     }
 
-    public boolean setParentForChild(int parentId, int childId) {
-        return service.setParentForChild(parentId, childId);
-    }
 
-    public List<Person> getFamilyMembers() {
-        return service.getFamilyMembers();
-    }
-
-    public void sortByName() {
-        service.sortByName();
-    }
-
-    public void sortByBirthDate() {
-        service.sortByBirthDate();
-    }
-
-    public boolean saveFamilyTree(String filename) {
-        return service.saveFamilyTree(filename);
-    }
-
-    public boolean loadFamilyTree(String filename) {
-        return service.loadFamilyTree(filename);
-    }
-
-    public List<Person> getDescendants(int id) {
-        return service.getDescendants(id);
-    }
 }
